@@ -78,9 +78,10 @@ class MainActivity : AppCompatActivity() {
                 return "$lakh.$thousand L"
             }
         }
-        val formatter = DecimalFormat("##,###")
-        return formatter.format(amount)
-
+        else{
+            val formatter = DecimalFormat("##,###")
+            return formatter.format(amount)
+        }
     }
 
     fun getTimeAgo(past: Date): String {
