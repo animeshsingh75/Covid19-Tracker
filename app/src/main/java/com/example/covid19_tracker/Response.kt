@@ -12,6 +12,7 @@ data class StatewiseItem(
 	val deltarecovered: String? = null,
 	val active: String? = null,
 	val deltaconfirmed: String? = null,
+	val deltaactive: String? = null,
 	val state: String? = null,
 	val statecode: String? = null,
 	val confirmed: String? = null,

@@ -20,46 +20,59 @@ class StateAdapter(val list: MutableList<StatewiseItem>) : BaseAdapter() {
         val view = convertView ?: LayoutInflater.from(parent.context)
             .inflate(R.layout.item_list, parent, false)
         val item = list[position]
-        val confirmedTv=view.findViewById<TextView>(R.id.confirmedTv)
-        val activeTv=view.findViewById<TextView>(R.id.activeTv)
-        val deceasedTv=view.findViewById<TextView>(R.id.deceasedTv)
-        val recoveredTv=view.findViewById<TextView>(R.id.recoveredTv)
-        val stateTv=view.findViewById<TextView>(R.id.stateTv)
-        val confirmed=getFormatedAmount(item.confirmed!!.toInt())
-        val active=getFormatedAmount(item.active!!.toInt())
-        val recovered=getFormatedAmount(item.recovered!!.toInt())
-        val deaths=getFormatedAmount(item.deaths!!.toInt())
-        confirmedTv.text=confirmed
-        activeTv.text=active
-        recoveredTv.text=recovered
-        deceasedTv.text=deaths
-        stateTv.text=item.state
+        val confirmedTv = view.findViewById<TextView>(R.id.confirmedTv)
+        val activeTv = view.findViewById<TextView>(R.id.activeTv)
+        val deceasedTv = view.findViewById<TextView>(R.id.deceasedTv)
+        val recoveredTv = view.findViewById<TextView>(R.id.recoveredTv)
+        val stateTv = view.findViewById<TextView>(R.id.stateTv)
+        val confirmed = getFormatedAmount(item.confirmed!!.toInt())
+        val active = getFormatedAmount(item.active!!.toInt())
+        val recovered = getFormatedAmount(item.recovered!!.toInt())
+        val deaths = getFormatedAmount(item.deaths!!.toInt())
+        confirmedTv.text = SpannableDelta(
+            "${confirmed}\n ↑${item.deltaconfirmed ?: "0"}",
+            "#D32F2F",
+            confirmed?.length ?: 0
+        )
+        activeTv.text = SpannableDelta(
+            "${active}\n ↑${item.deltaactive ?: "0"}",
+            "#1976D2",
+            active?.length ?: 0
+        )
+        recoveredTv.text = SpannableDelta(
+            "${recovered}\n ↑ ${item.deltarecovered ?: "0"}",
+            "#388E3C",
+            recovered?.length ?: 0
+        )
+        deceasedTv.text = SpannableDelta(
+            "${deaths} \n ↑ ${item.deltadeaths ?: "0"}",
+            "#FBC02D",
+            deaths?.length ?: 0
+        )
+        stateTv.text = item.state
         return view
     }
+
     fun getFormatedAmount(amount: Int): String? {
         if (amount > 10000000) {
             val cr = amount / 10000000
-            val remainder = amount-cr*10000000
+            val remainder = amount - cr * 10000000
             val lakh = remainder / 100000
-            if(lakh<10){
+            if (lakh < 10) {
                 return "$cr.0$lakh Cr"
-            }
-            else{
+            } else {
                 return "$cr.$lakh Cr"
             }
-        }
-        else if(amount>100000){
+        } else if (amount > 100000) {
             val lakh = amount / 100000
-            val remainder = amount-lakh*100000
+            val remainder = amount - lakh * 100000
             val thousand = remainder / 1000
-            if(thousand<10){
+            if (thousand < 10) {
                 return "$lakh.0$thousand L"
-            }
-            else{
+            } else {
                 return "$lakh.$thousand L"
             }
-        }
-        else{
+        } else {
             val formatter = DecimalFormat("##,###")
             return formatter.format(amount)
         }
