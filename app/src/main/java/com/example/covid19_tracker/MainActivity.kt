@@ -2,7 +2,9 @@ package com.example.covid19_tracker
 
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.covid19_tracker.databinding.ActivityMainBinding
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
@@ -16,11 +18,15 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
+    lateinit var stateAdapter: StateAdapter
     lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        binding.apply {
+            list.addHeaderView(LayoutInflater.from(this@MainActivity).inflate(R.layout.item_header,list,false))
+        }
         fetchResults()
     }
 
@@ -31,10 +37,19 @@ class MainActivity : AppCompatActivity() {
                 val data = Gson().fromJson(response.body?.string(), Response::class.java)
                 launch(Dispatchers.Main) {
                     bindCombinedData(data.statewise?.get(0))
+                    bindStateWiseData(data.statewise.subList(1,data.statewise.size))
                 }
             }
         }
 
+    }
+
+    private fun bindStateWiseData(subList: MutableList<StatewiseItem>) {
+        val stateName=subList[35].state
+        subList.removeAt(35)
+        Log.wtf("State","$stateName")
+        stateAdapter= StateAdapter(subList)
+        binding.list.adapter=stateAdapter
     }
 
     private fun bindCombinedData(data: StatewiseItem) {

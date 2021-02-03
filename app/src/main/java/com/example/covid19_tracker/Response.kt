@@ -1,7 +1,7 @@
 package com.example.covid19_tracker
 
 data class Response(
-	val statewise: List<StatewiseItem>
+	val statewise: MutableList<StatewiseItem>
 )
 
 data class StatewiseItem(
